@@ -32,6 +32,9 @@ from chatbot import (
     notify_mode_change,
 )
 
+# Import chart editor
+from chart_editor import init_editor_state, render_editor
+
 # Page config
 st.set_page_config(
     page_title="Chart Style Replicator",
@@ -57,6 +60,7 @@ def init_session_state():
 
 init_session_state()
 init_chatbot_state()
+init_editor_state()
 
 
 # Initialize Bedrock client (cached)
@@ -282,7 +286,7 @@ with main_col:
             st.markdown("---")
             st.subheader("💾 Export")
 
-            exp1, exp2, exp3 = st.columns(3)
+            exp1, exp2, exp3, exp4 = st.columns(4)
 
             with exp1:
                 html_template = f"""<!DOCTYPE html>
@@ -323,6 +327,23 @@ window.addEventListener('resize', function(){{ chart.resize(); }});
                     mime="text/csv",
                     use_container_width=True
                 )
+
+            with exp4:
+                if st.button("✏️ Edit Chart", use_container_width=True, type="secondary"):
+                    st.session_state.editor_open = not st.session_state.editor_open
+                    # Reset editor working copy when opening
+                    if st.session_state.editor_open:
+                        import copy
+                        st.session_state.editor_config = copy.deepcopy(
+                            st.session_state.styling_config)
+                    elif "editor_config" in st.session_state:
+                        del st.session_state["editor_config"]
+                    st.rerun()
+
+            # ── Inline Chart Editor ──
+            if st.session_state.get("editor_open", False):
+                st.markdown("---")
+                render_editor()
 
             st.markdown("---")
             if st.button("🔄 Start Over", use_container_width=True):

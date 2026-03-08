@@ -110,7 +110,7 @@ def build_perfect_echarts(description: str, data: Dict) -> Dict:
             "data": x_labels,
             "boundaryGap": False,
             "axisLine": {
-                "show": True,
+                "show": x_cfg.get('axis_line_show', True),
                 "lineStyle": {
                     "color": x_cfg.get('axis_line_color', '#333'),
                     "width": x_cfg.get('axis_line_width', 1),
@@ -122,13 +122,23 @@ def build_perfect_echarts(description: str, data: Dict) -> Dict:
                 "color": x_cfg.get('label_color', '#333'),
                 "interval": 11,
             },
+            "splitLine": {
+                "show": x_cfg.get('grid_lines', False),
+                "lineStyle": {"color": x_cfg.get('grid_color', '#e0e0e0')},
+            },
         },
         "yAxis": {
             "type": "value",
             "min": y_cfg.get('min', 0),
             "max": y_cfg.get('max', 8),
             "interval": y_cfg.get('interval', 1),
-            "axisLine": {"show": y_cfg.get('axis_line_show', False)},
+            "axisLine": {
+                "show": y_cfg.get('axis_line_show', False),
+                "lineStyle": {
+                    "color": y_cfg.get('axis_line_color', '#333'),
+                    "width": y_cfg.get('axis_line_width', 1),
+                },
+            },
             "axisTick": {"show": y_cfg.get('tick_show', False)},
             "axisLabel": {
                 "fontSize": y_cfg.get('label_font_size', 13),
